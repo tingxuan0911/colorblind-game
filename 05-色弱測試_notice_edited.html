@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .btns {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 50px;
+            background-color: blueviolet;
+        }
+
+        #start {
+            width: 50px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            background-color: antiquewhite;
+        }
+
+        #main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 300px;
+            height: 300px;
+            background-color: blanchedalmond;
+        }
+
+        #main div {
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            margin: 20px;
+        }
+
+        #main>.ans {
+            opacity: 0.3;
+        }
+
+        .status {
+            width: 100px;
+            height: 50px;
+            right: 0;
+            top: 20%;
+            background-color: darkorange;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="btns">
+        <!-- 這個 點擊事件 startGame(2) 會往下找到 90 行 的 startGame() 開始動作 -->
+        <!-- 假如這邊帶到其他的 function() 就不會讓startGame()啟動 -->
+        <!-- startGame(2) 的 2 會傳遞給 index -->
+        <div id="start" onclick="startGame(2)">開始</div>
+    </div>
+    <div id="main"></div>
+
+    <div class="status">
+        <div class="score">分數: <span id="score">0</span></div>
+        <div class="timer">剩餘時間: <span id="timeleft"></span></div>
+    </div>
+
+    <script>
+        var main = document.querySelector('#main');
+        var score = document.querySelector('#score');
+        var timeleft = document.querySelector('#timeleft');
+        var timelimit = 60;
+
+
+
+        function startGame(index) {
+            timer = setInterval(timeRuning, 1000);
+            timeleft.innerHTML = timelimit;
+            makeBlock(index);
+          
+        }
+
+        function makeBlock(index) {
+            main.style.width = `calc(${index}*140px)`;
+            main.style.height = `calc(${index}*140px)`;
+            main.innerHTML = "";
+            var blocks = index * index;
+            var ans = Math.floor(Math.random() * blocks);
+            var r = Math.floor(Math.random() * 128) + 64; //64~191
+            var g = Math.floor(Math.random() * 128) + 64;
+            var b = Math.floor(Math.random() * 128) + 64;
+
+            //根據答題數 改變你的方塊透明度
+            if (parseInt(score.innerHTML) < 10) {
+                var difficulty = 0.3;
+            } else if (parseInt(score.innerHTML) < 15) {
+                var difficulty = 0.5;
+            } else {
+                var difficulty = 0.8;
+            }
+
+            for (let i = 0; i < blocks; i++) {
+                if (i == ans) {
+                    main.innerHTML += `
+                    <div 
+                    style="background-color:rgb(${r},${g},${b});opacity:${difficulty}" 
+                    class="ans" 
+                    onclick="check()">
+                    </div>`;
+                } else {
+                    main.innerHTML += `
+                    <div 
+                    style="background-color:rgb(${r},${g},${b})"
+                    onclick="check()">
+                        </div>`;
+                }
+            }
+        }
+        //根據答題數 改變你的方塊數量
+        function check() {
+            score.innerHTML = parseInt(score.innerHTML) + 1;
+            if (parseInt(score.innerHTML) < 5) {
+                makeBlock(2);
+            } else if (parseInt(score.innerHTML) < 10) {
+                makeBlock(3);
+            } else if (parseInt(score.innerHTML) < 15) {
+                makeBlock(4);
+            } else {
+                makeBlock(5);
+            }
+        }
+        function timeRuning() {
+            timeleft.innerHTML = parseInt(timeleft.innerHTML) - 1;
+        }
+        debugger;
+    </script>
+</body>
+
+</html>
